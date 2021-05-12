@@ -1,7 +1,7 @@
 const express = require("express");
 const router = express.Router();
 
-const Rooms = require("../models/Room.models");
+const Rooms = require("../models/Room.model");
 
 //Crud
 router.post("/room", async (req, res) => {
@@ -32,7 +32,11 @@ router.get("/room/:id", async (req, res) => {
   try {
     const { id } = req.params;
 
-    const room = await Rooms.findOne({ _id: id });
+    const room = await Rooms.findOne({ _id: id }).populate({
+      path: "reviews",
+      model: "Review",
+    })
+    
 
     if (room) {
       return res.status(200).json(room);
@@ -45,10 +49,10 @@ router.get("/room/:id", async (req, res) => {
   }
 });
 
-//crUd
+//crUd ---> UPDATE ONE
 router.put("room/:id", async (req, res) => {
   try {
-    const { id }= req.params;
+    const { id } = req.params;
 
     const foundRoom = await Rooms.findOneAndUpdate(
       { _id: id },
@@ -67,7 +71,22 @@ router.put("room/:id", async (req, res) => {
   }
 });
 
+//cruD ---> DELTE ONE
+router.delete("room/:id", async (req, res) => {
+  try {
+    const { id } = req.params;
 
+    const deletedRoom = Rooms.deleteOne({ _id: id });
 
+    if (deletedRoom) {
+      return res.status(200).json(deletedRoom);
+    } else {
+      return res.status(404).json({ msg: "Room not found." });
+    }
+  } catch (err) {
+    console.error(err);
+    return res.status(500).json({ msg: "Room not found." });
+  }
+});
 
 module.exports = router;
