@@ -19,6 +19,9 @@ app.use("/", roomRouter);
 const reveiwRouter = require("./routes/reviews.routes");
 app.use("/", reveiwRouter);
 
+const userRouter = require("./routes/user.routes");
+app.use("/", userRouter);
+
 app.listen(Number(PORT), () =>
   console.log(`Server up and running at port ${PORT}`)
 );
